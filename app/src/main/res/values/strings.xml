@@ -67,4 +67,10 @@
     <string name="splash_act_name">CramBuster</string>
     <string name="tagline">Get things done, faster</string>
     <string name="task_hint">Enter task name</string>
+
+
+    <string name="back"><![CDATA[<-]]></string>
+    <string name="forward"><![CDATA[->]]></string>
+
+
 </resources>

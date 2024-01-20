@@ -9,13 +9,14 @@ import androidx.core.app.NotificationCompat;
 import com.example.crambusterapp.R;
 import com.example.crambusterapp.StartTimerActionReceiver;
 
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 import static com.example.crambusterapp.Constants.INTENT_NAME_ACTION;
 import static com.example.crambusterapp.Constants.INTENT_VALUE_LONG_BREAK;
 import static com.example.crambusterapp.Constants.INTENT_VALUE_SHORT_BREAK;
 import static com.example.crambusterapp.Constants.INTENT_VALUE_START;
 import static com.example.crambusterapp.Constants.LONG_BREAK;
 import static com.example.crambusterapp.Constants.SHORT_BREAK;
-import static com.example.crambusterapp.Constants.TAMETU;
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 
 public class NotificationActionUtils {
     /**
@@ -29,7 +30,7 @@ public class NotificationActionUtils {
         String actionText = "";
 
         switch (currentlyRunningServiceType) {
-            case TAMETU:
+            case CRAMBUSTER:
                 iconResource = R.drawable.play;
                 actionText = context.getString(R.string.start_tametu);
                 break;
@@ -56,7 +57,7 @@ public class NotificationActionUtils {
     private static PendingIntent getPendingIntent(int requestCode, Context context) {
         String intentValue = "";
         switch (requestCode) {
-            case TAMETU:
+            case CRAMBUSTER:
                 intentValue = INTENT_VALUE_START;
                 break;
             case SHORT_BREAK:

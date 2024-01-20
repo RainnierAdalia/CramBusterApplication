@@ -13,7 +13,7 @@ import com.example.crambusterapp.CountDownTimerService;
 
 import static com.example.crambusterapp.MainActivity.currentlyRunningServiceType;
 import static com.example.crambusterapp.Constants.COMPLETE_ACTION_BROADCAST;
-import static com.example.crambusterapp.Constants.TAMETU;
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 import static com.example.crambusterapp.Utils.ringID;
 import static com.example.crambusterapp.Utils.soundPool;
 import static com.example.crambusterapp.Utils.updateCurrentlyRunningServiceType;
@@ -27,7 +27,7 @@ public class StopTimerUtils {
     public static void sessionComplete(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        if (currentlyRunningServiceType == TAMETU) {
+        if (currentlyRunningServiceType == CRAMBUSTER) {
 
             // Updates newWorkSessionCount in SharedPreferences and displays it on TextView.
             Utils.updateWorkSessionCount(preferences, context);
@@ -52,7 +52,7 @@ public class StopTimerUtils {
      * Tasks executed when the session is cancelled prematurely
      */
     public static void sessionCancel(Context context, SharedPreferences preferences) {
-        updateCurrentlyRunningServiceType(preferences, context, TAMETU);
+        updateCurrentlyRunningServiceType(preferences, context, CRAMBUSTER);
         stopTimer(context);
         sendBroadcast(context);
     }

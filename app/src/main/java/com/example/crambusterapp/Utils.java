@@ -10,9 +10,10 @@ import java.util.concurrent.TimeUnit;
 
 import com.example.crambusterapp.R;
 
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 import static com.example.crambusterapp.Constants.LONG_BREAK;
 import static com.example.crambusterapp.Constants.SHORT_BREAK;
-import static com.example.crambusterapp.Constants.TAMETU;
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 
 public class Utils {
     public static SoundPool soundPool;
@@ -77,7 +78,7 @@ public class Utils {
     }
 
     public static long getCurrentDurationPreferenceOf(SharedPreferences preferences, Context context, int currentlyRunningServiceType) {
-        if (currentlyRunningServiceType == TAMETU) {
+        if (currentlyRunningServiceType == CRAMBUSTER) {
             // Current value of work duration stored in shared-preference
             int currentWorkDurationPreference = preferences.getInt(context.getString(R.string.work_duration_key), 1);
             // Switch case to return appropriate minute value of work duration according value stored in shared-preference.

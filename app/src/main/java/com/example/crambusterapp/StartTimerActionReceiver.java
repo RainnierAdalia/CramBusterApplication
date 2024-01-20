@@ -9,13 +9,14 @@ import android.util.Log;
 
 import com.example.crambusterapp.Utils;
 
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 import static com.example.crambusterapp.Constants.INTENT_NAME_ACTION;
 import static com.example.crambusterapp.Constants.INTENT_VALUE_LONG_BREAK;
 import static com.example.crambusterapp.Constants.INTENT_VALUE_SHORT_BREAK;
 import static com.example.crambusterapp.Constants.INTENT_VALUE_START;
 import static com.example.crambusterapp.Constants.LONG_BREAK;
 import static com.example.crambusterapp.Constants.SHORT_BREAK;
-import static com.example.crambusterapp.Constants.TAMETU;
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 import static com.example.crambusterapp.StartTimerUtils.startTimer;
 
 public class StartTimerActionReceiver extends BroadcastReceiver {
@@ -31,7 +32,7 @@ public class StartTimerActionReceiver extends BroadcastReceiver {
 
         switch (receivedIntent) {
             case INTENT_VALUE_START:
-                duration = Utils.getCurrentDurationPreferenceOf(preferences, context, TAMETU);
+                duration = Utils.getCurrentDurationPreferenceOf(preferences, context, CRAMBUSTER);
                 logMessage = "TIMER was started with";
                 break;
             case INTENT_VALUE_SHORT_BREAK:

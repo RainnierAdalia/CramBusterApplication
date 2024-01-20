@@ -2,12 +2,12 @@ package com.example.crambusterapp;
 
 public class Constants {
 
-    public static final int TAMETU = 0;
+    public static final int CRAMBUSTER = 0;
     public static final int SHORT_BREAK = 1;
     public static final int LONG_BREAK = 2;
 
     public static final int TASK_INFORMATION_NOTIFICATION_ID = 10;
-    public static final String CHANNEL_ID = "TAMETU";
+    public static final String CHANNEL_ID = "CRAMBUSTER";
 
     //Broadcast ID
     public static final String COUNTDOWN_BROADCAST = "com.gis2018.countdown";

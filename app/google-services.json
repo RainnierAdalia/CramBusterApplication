@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1054908626441",
+    "project_id": "crambuster-69fcc",
+    "storage_bucket": "crambuster-69fcc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054908626441:android:f96a448aff895e7d60ead8",
+        "android_client_info": {
+          "package_name": "com.example.crambusterapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCbKk2AnIQLxVS4cRj0h7VZJiQaE2UuXWY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

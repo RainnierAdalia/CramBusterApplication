@@ -2,10 +2,13 @@ package com.example.crambusterapp;
 
 import android.app.ActivityManager;
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
@@ -14,11 +17,14 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.ToggleButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,8 +34,13 @@ import androidx.core.app.NotificationManagerCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.example.crambusterapp.databinding.ActivityMainBinding;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 import static com.example.crambusterapp.CheckMarkUtils.updateCheckMarkCount;
 import static com.example.crambusterapp.Constants.CHANNEL_ID;
@@ -42,7 +53,7 @@ import static com.example.crambusterapp.Constants.SHORT_BREAK_DURATION_KEY;
 import static com.example.crambusterapp.Constants.START_ACTION_BROADCAST;
 import static com.example.crambusterapp.Constants.START_LONG_BREAK_AFTER_KEY;
 import static com.example.crambusterapp.Constants.STOP_ACTION_BROADCAST;
-import static com.example.crambusterapp.Constants.TAMETU;
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 import static com.example.crambusterapp.Constants.TASK_INFORMATION_NOTIFICATION_ID;
 import static com.example.crambusterapp.Constants.TASK_MESSAGE;
 import static com.example.crambusterapp.Constants.TASK_ON_HAND_COUNT_KEY;
@@ -78,6 +89,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private ImageView settingsImageViewMain; // Add this line
     private TextView countDownTextView; // Add this line
 
+    private Button calendar,menu;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,11 +104,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         timerButton = findViewById(R.id.timer_button_main);
         settingsImageViewMain = findViewById(R.id.settings_imageview_main);
         countDownTextView = findViewById(R.id.countdown_textview_main);
-
+        menu = findViewById(R.id.menu);
 
         setOnClickListeners();
 
         determineViewState(isServiceRunning(CountDownTimerService.class));
+        setupCalendarButton();
+
+        menu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent save = new Intent(MainActivity.this, event.class);
+                startActivity(save);
+            }
+        });
 
         // Receives broadcast that the timer has stopped.
         stoppedBroadcastReceiver = new BroadcastReceiver() {
@@ -206,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void retrieveDurationValues() {
         // Retrieving current value of Duration for POMODORO, SHORT_BREAK and
         // LONG_BREAK from SharedPreferences.
-        workDuration = Utils.getCurrentDurationPreferenceOf(preferences, this, TAMETU);
+        workDuration = Utils.getCurrentDurationPreferenceOf(preferences, this, CRAMBUSTER);
         shortBreakDuration = Utils.getCurrentDurationPreferenceOf(preferences, this, SHORT_BREAK);
         longBreakDuration = Utils.getCurrentDurationPreferenceOf(preferences, this, LONG_BREAK);
 
@@ -316,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if ((resume - pause) >= 14400)
                 preferences.edit().putInt(getString(R.string.work_session_count_key), 0).apply();
 
-            if (currentlyRunningServiceType == TAMETU) {
+            if (currentlyRunningServiceType == CRAMBUSTER) {
                 // Rule 5: Starting or Cancelling a Pomodoro
                 if (timerButton.isChecked()) {
                     startTimer(workDuration, this);
@@ -352,7 +374,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Rule 10: Managing App Visibility
         determineViewState(isServiceRunning(CountDownTimerService.class));
 
-        // Additional rules can be implemented similarly...
     }
 
     /**
@@ -363,7 +384,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void changeToggleButtonStateText(int currentlyRunningServiceType) {
         timerButton.setChecked(isServiceRunning(CountDownTimerService.class));
-        if (currentlyRunningServiceType == TAMETU) {
+        if (currentlyRunningServiceType == CRAMBUSTER) {
             countDownTextView.setText(workDurationString);
         } else if (currentlyRunningServiceType == SHORT_BREAK) {
             countDownTextView.setText(shortBreakDurationString);
@@ -479,7 +500,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      * Displays alert dialog when a Pomodoro (Work-Session) is finished.
      */
     private void displayTametuCompletionAlertDialog() {
-        if (currentlyRunningServiceType != TAMETU && isAppVisible && !alertDialog.isShowing() && !isServiceRunning(CountDownTimerService.class)) {
+        if (currentlyRunningServiceType != CRAMBUSTER && isAppVisible && !alertDialog.isShowing() && !isServiceRunning(CountDownTimerService.class)) {
             alertDialog.show();
         }
     }
@@ -525,9 +546,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .setUsesChronometer(true); //timer that counts-up. Displays time in-between two sessions
 
         switch (currentlyRunningServiceType) {
-            case TAMETU:
+            case CRAMBUSTER:
                 notificationBuilder
-                        .addAction(getIntervalAction(TAMETU, MainActivity.this))
+                        .addAction(getIntervalAction(CRAMBUSTER, MainActivity.this))
                         .setContentTitle(getString(R.string.break_over_notification_title))
                         .setContentText(getString(R.string.break_over_notification_content_text));
                 break;
@@ -594,4 +615,69 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 updateCheckMarkCount(this);
         }
     }
+    private void setupCalendarButton() {
+        Button calendarButton = findViewById(R.id.calendar);
+        calendarButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDateTimePicker();
+            }
+        });
+    }
+
+    // Method to show date and time picker
+    private void showDateTimePicker() {
+        final Calendar currentDate = Calendar.getInstance();
+        final Calendar date = Calendar.getInstance();
+        new DatePickerDialog(MainActivity.this, new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                date.set(year, monthOfYear, dayOfMonth);
+                new TimePickerDialog(MainActivity.this, new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        date.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                        date.set(Calendar.MINUTE, minute);
+
+                        // Prompt for Event Name
+                        final EditText eventNameInput = new EditText(MainActivity.this);
+                        AlertDialog.Builder eventDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+                        eventDialogBuilder.setTitle("Enter Event Name");
+                        eventDialogBuilder.setView(eventNameInput);
+                        eventDialogBuilder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String eventName = eventNameInput.getText().toString();
+
+                                // Format the date and time
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+                                String formattedDate = dateFormat.format(date.getTime());
+                                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
+                                String formattedTime = timeFormat.format(date.getTime());
+
+                                // Create Reminder instance
+                                Reminder reminder = new Reminder();
+                                reminder.setDate(formattedDate);
+                                reminder.setTime(formattedTime);
+                                reminder.setEvent(eventName);
+
+                                // Save to Firebase
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference("Reminders");
+                                String reminderId = databaseReference.push().getKey();
+                                if (reminderId != null) {
+                                    databaseReference.child(reminderId).setValue(reminder);
+                                }
+                            }
+                        });
+                        eventDialogBuilder.setNegativeButton("Cancel", null);
+                        AlertDialog eventDialog = eventDialogBuilder.create();
+                        eventDialog.show();
+                    }
+                }, currentDate.get(Calendar.HOUR_OF_DAY), currentDate.get(Calendar.MINUTE), false).show();
+            }
+        }, currentDate.get(Calendar.YEAR), currentDate.get(Calendar.MONTH), currentDate.get(Calendar.DATE)).show();
+    }
+
+
+
 }

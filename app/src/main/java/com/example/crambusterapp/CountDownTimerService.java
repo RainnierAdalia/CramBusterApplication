@@ -28,7 +28,7 @@ import static com.example.crambusterapp.Constants.INTENT_VALUE_COMPLETE;
 import static com.example.crambusterapp.Constants.TASK_INFORMATION_NOTIFICATION_ID;
 import static com.example.crambusterapp.Constants.TASK_MESSAGE;
 import static com.example.crambusterapp.Constants.STOP_ACTION_BROADCAST;
-import static com.example.crambusterapp.Constants.TAMETU;
+import static com.example.crambusterapp.Constants.CRAMBUSTER;
 import static com.example.crambusterapp.Utils.ringID;
 import static com.example.crambusterapp.Utils.soundPool;
 import static com.example.crambusterapp.Utils.tickID;
@@ -125,7 +125,7 @@ public class CountDownTimerService extends Service {
                 notificationBuilder
                         .addAction(R.drawable.complete, "Complete", completeActionPendingIntent)
                         .addAction(R.drawable.cancel, "Cancel", cancelActionPendingIntent)
-                        .setContentTitle("Tametu Countdown Timer")
+                        .setContentTitle("CramBuster Countdown Timer")
                         .setContentText(getContentText());
                 break;
             case 1:
@@ -177,13 +177,13 @@ public class CountDownTimerService extends Service {
             @Override
             public void onFinish() {
                 // Updates and Retrieves the new value of WorkSessionCount.
-                if (currentlyRunningServiceType == TAMETU) {
+                if (currentlyRunningServiceType == CRAMBUSTER) {
                     newWorkSessionCount = Utils.updateWorkSessionCount(preferences, getApplicationContext());
                     // Getting the type of break the user should take, and updating the type of currently running service
                     currentlyRunningServiceType = Utils.getTypeOfBreak(preferences, getApplicationContext());
                 } else {
                     // If the last value of currentlyRunningServiceType was SHORT_BREAK or LONG_BREAK, set it back to POMODORO
-                    currentlyRunningServiceType = TAMETU;
+                    currentlyRunningServiceType = CRAMBUSTER;
                 }
 
                 newWorkSessionCount = preferences.getInt(getString(R.string.work_session_count_key), 0);
